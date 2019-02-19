@@ -7,3 +7,7 @@ class RegisterInfo(forms.Form):
     phone = forms.CharField(min_length=11, max_length=11)
     password = forms.CharField(min_length=6)
     repeat_passwd = forms.CharField(min_length=6)
+
+class LoginInfo(forms.Form):
+    workid = forms.CharField()
+    password = forms.CharField()
