@@ -18,6 +18,13 @@ def verify(**kwargs):
     else:
         return {'success': '可以注册'}
 
+def login_judge(request):
+    if request.session.get('workid', '') \
+    and request.session.get('workname', ''):
+        return True
+    else:
+        return False
+
 class RegisterView(View):
     def get(self, request):
         return render(request, 'dormadmin/register.html')
@@ -60,6 +67,8 @@ class LoginView(View):
                     password=data.get('password', '')
                     ).exists():
                 request.session['workid'] = data.get('workid', '')
+                q = DormAdminUser.objects.get(workid=data.get('workid', ''))
+                request.session['workname'] = q.name
                 return redirect(reverse('dormadmin:index'))
             else:
                 context = {'error': '用户或密码错误'}
@@ -70,11 +79,19 @@ class LoginView(View):
             context = {'error': '\\n'.join(error)}
             return render(request, 'dormadmin/login.html', context)
 
+def LogoutView(request):
+    del request.session['workid']
+    del request.session['workname']
+    return redirect(reverse('dormadmin:login'))
+
 class IndexView(View):
     def get(self, request):
+        if not login_judge(request):
+            return redirect(reverse('dormadmin:login'))
         workid = request.session.get('workid', '')
-        print(workid)
-        return render(request, 'dormadmin/index.html')
+        workname = request.session.get('workname', '')
+        context = {'workstatus': '{}#{}'.format(workname, workid)}
+        return render(request, 'dormadmin/index.html', context)
 
     def post(self, request):
         pass
