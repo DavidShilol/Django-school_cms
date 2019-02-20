@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, reverse
-from django.views.generic import View
+from django.views.generic import View, ListView, DetailView
 from .forms import RegisterInfo, LoginInfo 
 from .models import DormAdminUser
-from dorm.models import Student
+from dorm.models import Building, Room, Student
 from teacher.models import TeacherUser
 import random
+from django.db.models import F
 
 # Create your views here.
 def verify(**kwargs):
@@ -95,3 +96,17 @@ class IndexView(View):
 
     def post(self, request):
         pass
+
+class BuildingView(ListView):
+    template_name = 'dormadmin/building.html'
+    context_object_name = 'building_list'
+
+    def get_queryset(self):
+        return Building.objects.all()
+
+class RoomView(ListView):
+    template_name = 'dormadmin/room.html'
+    context_object_name = 'room_list'
+
+    def get_queryset(self):
+        return Room.objects.annotate(building_num=F('building__number')).filter(building_num=self.kwargs.get('building_num', ''))

@@ -1,0 +1,73 @@
+{% extends 'dorm/index.html' %}
+{% load static %}
+
+{% block title %}学生宿舍管理系统-宿舍楼{% endblock %}
+
+{% block css_thispage %}
+  <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block dashboard_url %}{% url 'dormadmin:index' %}{% endblock %}
+{% block building_url %}{% url 'dormadmin:building' %}{% endblock %}
+
+{% block content %}
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+          <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">宿舍楼详情</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>楼号</th>
+                      <th>房间号</th>
+                      <th>床位</th>
+                      <th>空余数</th>
+                    </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                      <th>楼号</th>
+                      <th>房间号</th>
+                      <th>床位</th>
+                      <th>空余数</th>
+                    </tr>
+                    </tr>
+                  </tfoot>
+                  <tbody>
+                    {% for x in room_list %}
+                    <tr>
+                            <td>{{ x.building_num }}</td>
+                            <td>{{ x.number }}</td>
+                            <td>{{ x.volume }}</td>
+                            <td>{{ x.free }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+{% endblock %}
+
+{% block script_plugins %}
+  <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+{% endblock %}
+
+{% block script_custom %}
+  <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+{% endblock %}
+

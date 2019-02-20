@@ -1,6 +1,8 @@
 {% extends 'dorm/index.html' %}
 {% load static %}
-{% block title %}index{% endblock %}
+{% block title %}学生宿舍管理系统-首页{% endblock %}
+{% block dashboard_url %}{% url 'dormadmin:index' %}{% endblock %}
+{% block building_url %}{% url 'dormadmin:building' %}{% endblock %}
         {% block content %}
         <!-- Begin Page Content -->
         <div class="container-fluid">
