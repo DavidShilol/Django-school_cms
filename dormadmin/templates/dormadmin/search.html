@@ -1,0 +1,125 @@
+{% extends 'dorm/index.html' %}
+{% load static %}
+
+{% block title %}学生宿舍管理系统-宿舍楼{% endblock %}
+
+{% block css_thispage %}
+  <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block dashboard_url %}{% url 'dormadmin:index' %}{% endblock %}
+{% block building_url %}{% url 'dormadmin:building' %}{% endblock %}
+
+{% block content %}
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+          <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
+          <div class="col-sm-12 col-md-6">
+            <div class="dataTables_filter">
+              <label>
+              <input id="search" class="form-control form-control-sm" type="search" name="search_key">
+              </label>
+              <a onclick="PostSearch()"><input type="button" id="submit_search_key" value="search"></a>
+            </div>
+          </div>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">学生信息搜索</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>学号</th>
+                      <th>姓名</th>
+                      <th>班级</th>
+                      <th>导员</th>
+                      <th>宿舍号</th>
+                    </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                      <th>学号</th>
+                      <th>姓名</th>
+                      <th>班级</th>
+                      <th>导员</th>
+                      <th>宿舍号</th>
+                    </tr>
+                    </tr>
+                  </tfoot>
+                  <tbody id="tbody">
+                    {% for x in student_list %}
+                    <tr>
+                            <td>{{ x.number }}</td>
+                            <td>{{ x.name }}</td>
+                            <td>{{ x.info }}</td>
+                            <td>{{ x.teacher }}</td>
+                            <td>{{ x.room }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+{% endblock %}
+
+{% block script_plugins %}
+  <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+{% endblock %}
+
+{% block script_custom %}
+  <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+
+  <script>
+          function PostSearch(){
+            var data = {
+                    'key': $("#search").val(),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'};
+            $.ajax({
+                url: "",
+                type: "POST",
+                data: data,
+                success: function(data){
+                        var student_list = data.student_list;
+                        var l = student_list.length
+                        var tbody = document.getElementById("tbody");
+                        $("tbody").empty();
+                        for(var i=0; i < l; i++){
+                            var tr = document.createElement("tr");
+                            student = student_list[i]
+                            for(var key in student){
+                                var td = document.createElement("td");
+                                td.innerHTML = student[key];
+                                tr.appendChild(td);
+                            }
+                            tbody.appendChild(tr);
+                        }
+                        if(l == 0){
+                                var tr = document.createElement("tr");
+                                tr.className = "odd";
+                                var td = document.createElement("td");
+                                td.className = "dataTables_empty";
+                                td.setAttribute("colspan", "5");
+                                td.setAttribute("valign", "top");
+                                td.innerHTML = "No data available in table";
+                                tr.appendChild(td);
+                                tbody.appendChild(tr);
+                        }
+                        $("#dataTable tbody").append(tbody);
+                }
+            });
+          }
+  </script>
+{% endblock %}
+

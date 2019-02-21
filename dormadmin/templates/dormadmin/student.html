@@ -21,35 +21,38 @@
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">宿舍楼详情</h6>
+              <h6 class="m-0 font-weight-bold text-primary">宿舍成员</h6>
             </div>
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th>房间号</th>
-                      <th>楼号</th>
-                      <th>床位</th>
-                      <th>空余数</th>
+                      <th>学号</th>
+                      <th>姓名</th>
+                      <th>班级</th>
+                      <th>导员</th>
+                      <th>宿舍号</th>
                     </tr>
                   </thead>
                   <tfoot>
                     <tr>
-                      <th>房间号</th>
-                      <th>楼号</th>
-                      <th>床位</th>
-                      <th>空余数</th>
+                      <th>学号</th>
+                      <th>姓名</th>
+                      <th>班级</th>
+                      <th>导员</th>
+                      <th>宿舍号</th>
                     </tr>
                     </tr>
                   </tfoot>
                   <tbody>
-                    {% for x in room_list %}
+                    {% for x in student_list %}
                     <tr>
-                            <td><a href="{% url 'dormadmin:student' x.building_num x.number %}">{{ x.number }}</td>
-                            <td>{{ x.building_num }}</td>
-                            <td>{{ x.volume }}</td>
-                            <td>{{ x.free }}</td>
+                            <td>{{ x.number }}</td>
+                            <td>{{ x.name }}</td>
+                            <td>{{ x.info }}</td>
+                            <td>{{ x.teacher }}</td>
+                            <td>{{ x.room }}</td>
                     </tr>
                     {% endfor %}
                   </tbody>

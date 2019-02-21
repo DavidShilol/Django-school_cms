@@ -9,4 +9,6 @@ urlpatterns = [
     path('logout/', views.LogoutView, name='logout'),
     path('building/', views.BuildingView.as_view(), name='building'),
     path('building/<int:building_num>/', views.RoomView.as_view(), name='room'),
+    path('building/<int:building_num>/<int:room_num>/', views.StudentView.as_view(), name='student'),
+    path('search/', views.SearchView.as_view(), name='search'),
 ]

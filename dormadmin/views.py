@@ -1,3 +1,4 @@
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, reverse
 from django.views.generic import View, ListView, DetailView
 from .forms import RegisterInfo, LoginInfo 
@@ -109,4 +110,46 @@ class RoomView(ListView):
     context_object_name = 'room_list'
 
     def get_queryset(self):
-        return Room.objects.annotate(building_num=F('building__number')).filter(building_num=self.kwargs.get('building_num', ''))
+        return Room.objects\
+                .annotate(building_num=F('building__number'))\
+                .filter(building_num=self.kwargs.get('building_num', ''))\
+                .order_by('number')
+
+class StudentView(ListView):
+    template_name = 'dormadmin/student.html'
+    context_object_name = 'student_list'
+
+    def get_queryset(self):
+        return Student.objects\
+                .annotate(room_num=F('room__number'), 
+                building_num=F('room__building__number'),
+                teacher_name=F('teacher__name'))\
+                .filter(room_num=self.kwargs.get('room_num', ''),
+                        building_num=self.kwargs.get('building_num', ''))
+
+class SearchView(View):
+    def get(self, request):
+        print('get!')
+        return render(request, 'dormadmin/search.html')
+
+    def post(self, request):
+        if request.is_ajax():
+            key = request.POST.get('key', 'none')
+            key = key if key else 'none'
+            data = Student.objects\
+                    .annotate(room_num=F('room__number'),
+                    building_num=F('room__building__number'),
+                    teacher_name=F('teacher__name'))\
+                    .filter(name__contains=key)\
+                    .order_by('number')
+            student_list = []
+            for x in data:
+                student = {}
+                student['number'] = x.number
+                student['name'] = x.name
+                student['info'] = x.info
+                student['teacher'] = str(x.teacher)
+                student['room'] = str(x.room)
+                student_list.append(student)
+            return JsonResponse({'student_list': student_list})
+        return render(request, 'dormadmin/search.html')

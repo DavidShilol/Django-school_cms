@@ -52,7 +52,7 @@
                             <td>{{ x.sex }}</td>
                             <td>{{ x.floor }}</td>
                             <td>{{ x.volume }}</td>
-                            <td>{{ x.build_date }}</td>
+                            <td>{{ x.build_date|date:"Y.m.d" }}</td>
                     </tr>
                     {% endfor %}
                   </tbody>
