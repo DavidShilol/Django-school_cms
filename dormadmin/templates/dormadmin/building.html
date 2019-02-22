@@ -9,7 +9,7 @@
 
 {% block dashboard_url %}{% url 'dormadmin:index' %}{% endblock %}
 {% block building_url %}{% url 'dormadmin:building' %}{% endblock %}
-
+{% block student_url %}{% url 'dormadmin:search' %}{% endblock %}
 {% block content %}
         <!-- Begin Page Content -->
         <div class="container-fluid">
@@ -33,6 +33,7 @@
                       <th>层数</th>
                       <th>房间数</th>
                       <th>封楼日期</th>
+                      <td>编辑</td>
                     </tr>
                   </thead>
                   <tfoot>
@@ -42,6 +43,7 @@
                       <th>层数</th>
                       <th>房间数</th>
                       <th>封楼日期</th>
+                      <td>编辑</td>
                     </tr>
                     </tr>
                   </tfoot>
@@ -53,6 +55,7 @@
                             <td>{{ x.floor }}</td>
                             <td>{{ x.volume }}</td>
                             <td>{{ x.build_date|date:"Y.m.d" }}</td>
+                            <td><a id="edit_button" class="btn btn-info btn-circle btn-sm" onclick="Edit({{ forloop.counter0 }})">edit</a></td>
                     </tr>
                     {% endfor %}
                   </tbody>
@@ -64,7 +67,6 @@
         </div>
         <!-- /.container-fluid -->
 {% endblock %}
-
 {% block script_plugins %}
   <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
   <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
@@ -72,5 +74,44 @@
 
 {% block script_custom %}
   <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+  <script>
+          function Edit(line_num){
+                  var select = "tbody tr:eq("+line_num+")"
+                  var tds = $(select).children();
+                  var key_list = new Array("sex", "floor", "volume", "build_date")
+                  for(var i=1; i<tds.length-1; i++){
+                          var value = tds.eq(i).text();
+                          tds.eq(i).empty();
+                          var str = "<input type='text' name='"+key_list[i]+"' value="+value+" style='width:100%'>";
+                          tds.eq(i).append(str);
+                  }
+                  $("#edit_button").empty();
+                  var str = "ok"
+                  $("#edit_button").append("ok");
+                  $("#edit_button").attr("class", "btn btn-success btn-circle btn-sm");
+                  var str = "Finish("+line_num+")";
+                  $("#edit_button").attr("onclick", str);
+                  str = "<a id='cancel_button' class='btn btn-danger btn-circle btn-sm'>cancel</a>";
+                  $("#edit_button").after(str);
+          }
+            
+          function Finish(line_num){
+                  var select = "tbody tr:eq("+line_num+")";
+                  var tds = $(select).children();
+                  for(var i=1; i<tds.length-1; i++){
+                          var str = tds.eq(i).children().eq(0).val();
+                          tds.eq(i).empty();
+                          tds.eq(i).append(str);
+                  }
+
+                  $("#cancel_button").remove();
+                  $("#edit_button").empty();
+                  var str = "edit";
+                  $("#edit_button").append("str");
+                  $("#edit_button").attr("class", "btn btn-info btn-circle btn-sm");
+                  var str = "Edit("+line_num+")";
+                  $("#edit_button").attr("onclick", str);
+          }
+  </script>
 {% endblock %}
 
