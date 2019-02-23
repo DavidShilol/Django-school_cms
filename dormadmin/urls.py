@@ -11,4 +11,5 @@ urlpatterns = [
     path('building/<int:building_num>/', views.RoomView.as_view(), name='room'),
     path('building/<int:building_num>/<int:room_num>/', views.StudentView.as_view(), name='student'),
     path('search/', views.SearchView.as_view(), name='search'),
+    path('buildinghandle/', views.BuildingHandle.as_view(), name='buildinghandle'),
 ]

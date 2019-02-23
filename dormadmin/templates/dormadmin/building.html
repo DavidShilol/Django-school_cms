@@ -55,7 +55,7 @@
                             <td>{{ x.floor }}</td>
                             <td>{{ x.volume }}</td>
                             <td>{{ x.build_date|date:"Y.m.d" }}</td>
-                            <td><a id="edit_button" class="btn btn-info btn-circle btn-sm" onclick="Edit({{ forloop.counter0 }})">edit</a></td>
+                            <td><a class="btn btn-info btn-circle btn-sm" onclick="Edit({{ forloop.counter0 }})">edit</a></td>
                     </tr>
                     {% endfor %}
                   </tbody>
@@ -85,17 +85,31 @@
                           var str = "<input type='text' name='"+key_list[i]+"' value="+value+" style='width:100%'>";
                           tds.eq(i).append(str);
                   }
-                  $("#edit_button").empty();
-                  var str = "ok"
-                  $("#edit_button").append("ok");
-                  $("#edit_button").attr("class", "btn btn-success btn-circle btn-sm");
+                  edit_button = tds.last().children();
+                  edit_button.empty();
+                  edit_button.append("ok");
+                  edit_button.attr("class", "btn btn-success btn-circle btn-sm");
                   var str = "Finish("+line_num+")";
-                  $("#edit_button").attr("onclick", str);
-                  str = "<a id='cancel_button' class='btn btn-danger btn-circle btn-sm'>cancel</a>";
-                  $("#edit_button").after(str);
+                  edit_button.attr("onclick", str);
+                  str = "<a class='btn btn-danger btn-circle btn-sm'>cancel</a>";
+                  edit_button.after(str);
           }
             
           function Finish(line_num){
+                  var data = {
+                          'key': 'chuanshu test!',
+                          'csrfmiddlewaretoken': '{{ csrf_token }}'};
+
+                  $.ajax({
+                          url: "{% url 'dormadmin:buildinghandle' %}",
+                          type: "POST",
+                          data: data,
+                          success: function(data){
+                            console.log(data);
+                          }
+
+                  });
+
                   var select = "tbody tr:eq("+line_num+")";
                   var tds = $(select).children();
                   for(var i=1; i<tds.length-1; i++){
@@ -104,13 +118,13 @@
                           tds.eq(i).append(str);
                   }
 
-                  $("#cancel_button").remove();
-                  $("#edit_button").empty();
-                  var str = "edit";
-                  $("#edit_button").append("str");
-                  $("#edit_button").attr("class", "btn btn-info btn-circle btn-sm");
+                  tds.last().children().last().remove();
+                  ok_button = tds.last().children().first();
+                  ok_button.empty();
+                  ok_button.append("edit");
+                  ok_button.attr("class", "btn btn-info btn-circle btn-sm");
                   var str = "Edit("+line_num+")";
-                  $("#edit_button").attr("onclick", str);
+                  ok_button.attr("onclick", str);
           }
   </script>
 {% endblock %}

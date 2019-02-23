@@ -153,3 +153,13 @@ class SearchView(View):
                 student_list.append(student)
             return JsonResponse({'student_list': student_list})
         return render(request, 'dormadmin/search.html')
+
+class BuildingHandle(View):
+    def get(self, request):
+        return HttpResponse('xxx')
+
+    def post(self, request):
+        if self.request.is_ajax():
+            print(self.request.POST)
+            return HttpResponse('chuanshu success')
+        return HttpResponse('hhh')
