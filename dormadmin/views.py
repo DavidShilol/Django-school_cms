@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, reverse
 from django.views.generic import View, ListView, DetailView
-from .forms import RegisterInfo, LoginInfo 
+from .forms import RegisterInfo, LoginInfo, BuildingInfo 
 from .models import DormAdminUser
 from dorm.models import Building, Room, Student
 from teacher.models import TeacherUser
@@ -160,6 +160,19 @@ class BuildingHandle(View):
 
     def post(self, request):
         if self.request.is_ajax():
-            print(self.request.POST)
+            build_info = BuildingInfo(self.request.POST)
+            if build_info.is_valid():
+                if Building.objects.filter(
+                        number=data.get('number', 0)
+                        # sex=data['sex'],
+                        # floor=data['floor'],
+                        # volume=data['volume'],
+                        # build_date=data['build_date']
+                        ).exists():
+                    print('exists!')
+                else:
+                    print('not exists!')
+            else:
+                print(data.errors.get_json_data())
             return HttpResponse('chuanshu success')
         return HttpResponse('hhh')

@@ -82,10 +82,10 @@
                   for(var i=1; i<tds.length-1; i++){
                           var value = tds.eq(i).text();
                           tds.eq(i).empty();
-                          var str = "<input type='text' name='"+key_list[i]+"' value="+value+" style='width:100%'>";
+                          var str = "<input type='text' name='"+key_list[i-1]+"' value="+value+" style='width:100%'>";
                           tds.eq(i).append(str);
                   }
-                  edit_button = tds.last().children();
+                  var edit_button = tds.last().children();
                   edit_button.empty();
                   edit_button.append("ok");
                   edit_button.attr("class", "btn btn-success btn-circle btn-sm");
@@ -96,7 +96,14 @@
           }
             
           function Finish(line_num){
+                  var select = "tbody tr:eq("+line_num+")";
+                  var tds = $(select).children();
                   var data = {
+                          'number': tds.eq(0).children().text(),
+                          'sex': tds.eq(1).children().val(),
+                          'floor': tds.eq(2).children().val(),
+                          'volume': tds.eq(3).children().val(),
+                          'build_date': tds.eq(4).children().val(),
                           'key': 'chuanshu test!',
                           'csrfmiddlewaretoken': '{{ csrf_token }}'};
 
@@ -106,25 +113,40 @@
                           data: data,
                           success: function(data){
                             console.log(data);
+                            var select = "tbody tr:eq("+line_num+")";
+                            var tds = $(select).children();
+                            for(var i=1; i<tds.length-1; i++){
+                                    var str = tds.eq(i).children().eq(0).val();
+                                    tds.eq(i).empty();
+                                    tds.eq(i).append(str);
+                            }
+
+                            tds.last().children().last().remove();
+                            var ok_button = tds.last().children().first();
+                            ok_button.empty();
+                            ok_button.append("edit");
+                            ok_button.attr("class", "btn btn-info btn-circle btn-sm");
+                            var str = "Edit("+line_num+")";
+                            ok_button.attr("onclick", str);
                           }
 
                   });
 
-                  var select = "tbody tr:eq("+line_num+")";
-                  var tds = $(select).children();
-                  for(var i=1; i<tds.length-1; i++){
-                          var str = tds.eq(i).children().eq(0).val();
-                          tds.eq(i).empty();
-                          tds.eq(i).append(str);
-                  }
+                  // var select = "tbody tr:eq("+line_num+")";
+                  // var tds = $(select).children();
+                  // for(var i=1; i<tds.length-1; i++){
+                  //         var str = tds.eq(i).children().eq(0).val();
+                  //         tds.eq(i).empty();
+                  //         tds.eq(i).append(str);
+                  // }
 
-                  tds.last().children().last().remove();
-                  ok_button = tds.last().children().first();
-                  ok_button.empty();
-                  ok_button.append("edit");
-                  ok_button.attr("class", "btn btn-info btn-circle btn-sm");
-                  var str = "Edit("+line_num+")";
-                  ok_button.attr("onclick", str);
+                  // tds.last().children().last().remove();
+                  // var ok_button = tds.last().children().first();
+                  // ok_button.empty();
+                  // ok_button.append("edit");
+                  // ok_button.attr("class", "btn btn-info btn-circle btn-sm");
+                  // var str = "Edit("+line_num+")";
+                  // ok_button.attr("onclick", str);
           }
   </script>
 {% endblock %}

@@ -11,3 +11,10 @@ class RegisterInfo(forms.Form):
 class LoginInfo(forms.Form):
     workid = forms.CharField()
     password = forms.CharField()
+
+class BuildingInfo(forms.Form):
+    number = forms.IntegerField()
+    sex = forms.CharField()
+    floor = forms.IntegerField()
+    volume = forms.IntegerField()
+    build_date = forms.DateField(input_formats=['%Y.%m.%d'])
