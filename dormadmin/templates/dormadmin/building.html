@@ -115,12 +115,23 @@
                             console.log(data);
                             var select = "tbody tr:eq("+line_num+")";
                             var tds = $(select).children();
+                            if(data.info == "success"){
                             for(var i=1; i<tds.length-1; i++){
                                     var str = tds.eq(i).children().eq(0).val();
                                     tds.eq(i).empty();
                                     tds.eq(i).append(str);
+                            }}else if(data.info == "failed"){
+                            for(var i=1; i<tds.length-1; i++){
+                                    tds.eq(i).empty();
                             }
-
+                            tds.eq(1).append(data.data.sex);
+                            tds.eq(2).append(data.data.floor);
+                            tds.eq(3).append(data.data.volume);
+                            tds.eq(4).append(data.data.build_date);
+                            }else{
+                                window.alert("input invalid message");
+                                window.location.reload();
+                            }
                             tds.last().children().last().remove();
                             var ok_button = tds.last().children().first();
                             ok_button.empty();

@@ -160,19 +160,41 @@ class BuildingHandle(View):
 
     def post(self, request):
         if self.request.is_ajax():
+            print(self.request.POST)
             build_info = BuildingInfo(self.request.POST)
             if build_info.is_valid():
+                data = build_info.clean()
                 if Building.objects.filter(
-                        number=data.get('number', 0)
-                        # sex=data['sex'],
-                        # floor=data['floor'],
-                        # volume=data['volume'],
-                        # build_date=data['build_date']
+                        number=data['number'],
+                        sex=data['sex'],
+                        floor=data['floor'],
+                        volume=data['volume'],
+                        build_date=data['build_date']
                         ).exists():
-                    print('exists!')
+                    build = Building.objects.get(number=data['number'])
+                    build_data = {}
+                    build_data['number'] = build.number
+                    build_data['sex'] = build.sex
+                    build_data['floor'] = build.floor
+                    build_data['volume'] = build.volume
+                    build_data['build_date'] = build.build_date
+                    return JsonResponse({'info': 'failed', 'data': build_data})
                 else:
-                    print('not exists!')
+                    build = Building.objects.filter(number=data['number'])
+                    build.update(
+                            sex=data['sex'],
+                            floor=data['floor'],
+                            volume=data['volume'],
+                            build_date=data['build_date'])
+                    build = build.get(number=data['number'])
+                    build_data = {}
+                    build_data['number'] = build.number
+                    build_data['sex'] = build.sex
+                    build_data['floor'] = build.floor
+                    build_data['volume'] = build.volume
+                    build_data['build_date'] = build.build_date
+                    return JsonResponse({'info': 'success', 'data': build_data})
             else:
-                print(data.errors.get_json_data())
-            return HttpResponse('chuanshu success')
+                print(build_info.errors.get_json_data())
+                return JsonResponse({'info': 'invalid'})
         return HttpResponse('hhh')
